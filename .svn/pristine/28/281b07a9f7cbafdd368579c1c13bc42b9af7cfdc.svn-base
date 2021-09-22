@@ -1,0 +1,359 @@
+package Vue;
+
+//gestion des images
+import java.io.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+import Modele.*;
+import Controlleur.*;
+
+public class Menu extends JPanel{
+
+	//instance du Modele
+	protected CreationPlateau plateau;
+	//les boutons
+	protected JButton facile;
+	protected JButton medium;
+	protected JButton difficile;
+	protected JButton personnalise;
+	protected JButton retourMenu;
+	protected JButton finPartie;
+
+	//les textes
+	protected JLabel txt;
+	protected JLabel ennonce;
+	protected JLabel erreur;
+	protected JLabel partie;
+	protected JLabel score;
+	protected JTextField custom;
+
+	//la fenêtre de jeu
+	protected JPanel fen;
+
+	//les différentes images
+	protected ImageIcon imageBouton;
+	protected ImageIcon imagePanneau;
+
+	//couleur de fond
+	protected Color back = new Color(100, 131, 105);
+
+	//paramètre police
+	protected Font welcome = new Font("Arial", Font.ITALIC + Font.BOLD, 20);
+
+	public Menu(JPanel fen){
+		//création des images de fond
+		try{
+			//lien où l'on a trouvé l'image :https://www.pinterest.fr/pin/686447168193725811/ image pour les boutons
+			BufferedImage planche = ImageIO.read(new File("../image/planche.jpg"));
+			this.imageBouton = new ImageIcon(planche);
+			//lien ou touvé l'image : https://www.pinterest.fr/pin/628111479268298123/ image pour le panneau
+			BufferedImage panneau = ImageIO.read(new File("../image/panneau.jpg"));
+			this.imagePanneau = new ImageIcon(panneau);
+
+		this.fen   = fen;
+
+		this.txt = new JLabel(imagePanneau,JLabel.CENTER);
+		this.txt.setText("<html><br><br><center>Bienvenue dans le menu de selection des niveaux! <br> Veuillez choisir votre difficulté : <br> facile (0), medium (1), difficile (2) ou custom (de 3 à 6)</center></html>");
+		this.txt.setIconTextGap( - this.imagePanneau.getIconWidth()+150);
+		this.txt.setBounds(50,00,900,220);
+		this.txt.setFont(welcome);
+		this.fen.add(this.txt);
+
+		//configuration du boutton
+		this.facile = new JButton(imageBouton);//boutton avec image
+		//text +police
+		this.facile.setText("facile");
+		this.facile.setFont(welcome);
+		//place du texte sur l'image
+		this.facile.setIconTextGap( - this.imageBouton.getIconWidth()+100);
+		//Place du boutton dans le Jpanel
+		this.facile.setBounds(350,240,270,140);
+		this.facile.setBackground(back);
+
+		//ajout du bouton a la fentre + activation de sa méthode lorsqu'on clique dessus
+		this.fen.add(this.facile);
+		this.creaFacile();
+
+		//même chose pour la difficulté medium
+		this.medium = new JButton(imageBouton);
+		this.medium.setBounds(350,370,270,140);
+		this.medium.setText("medium");
+		this.medium.setFont(welcome);
+		this.medium.setIconTextGap( - this.imageBouton.getIconWidth()+85);
+		this.medium.setBackground(back);
+
+		this.fen.add(this.medium);
+		this.creaMedium();
+
+		//même chose pour la difficulté difficile
+		this.difficile = new JButton(imageBouton);
+		this.difficile.setBounds(350,510,270,140);
+		this.difficile.setText("difficile");
+		this.difficile.setFont(welcome);
+		this.difficile.setIconTextGap( - this.imageBouton.getIconWidth()+85);
+		this.difficile.setBackground(back);
+
+		this.fen.add(this.difficile);
+		this.creaDur();
+
+		//même chose pour la difficulté personnalisée
+		this.personnalise = new JButton(imageBouton);
+		this.personnalise.setBounds(350,650,270,140);
+		this.personnalise.setText("personnalisée");
+		this.personnalise.setFont(welcome);
+		this.personnalise.setIconTextGap( - this.imageBouton.getIconWidth()+50);
+		this.personnalise.setBackground(back);
+
+		this.fen.add(this.personnalise);
+		this.creaPerso();
+
+		//partie concenant le bouton pour les parties personnalisées
+		this.ennonce = new JLabel("custom");
+		this.ennonce.setFont(welcome);
+		this.ennonce.setBounds(450,770,200,80);
+		this.fen.add(this.ennonce);
+
+		this.custom = new JTextField();
+		this.custom.setBounds(350,830,270,20);
+		this.fen.add(this.custom);
+
+		//bouton de retour au menu: s'affiche uniquement en partie en cours
+		this.retourMenu = new JButton(imageBouton);
+		this.retourMenu.setBounds(70,800,270,140);
+		this.retourMenu.setText("Retour au menu");
+		this.retourMenu.setFont(welcome);
+		this.retourMenu.setIconTextGap( - this.imageBouton.getIconWidth()+40);
+		this.retourMenu.setBackground(back);
+
+		this.retourAuMenu();
+
+		//bouton de fin de partie
+		this.finPartie = new JButton(imageBouton);
+		this.finPartie.setBounds(650,800,270,140);
+		this.finPartie.setText("Fin de partie");
+		this.finPartie.setFont(welcome);
+		this.finPartie.setIconTextGap( - this.imageBouton.getIconWidth()+40);
+		this.finPartie.setBackground(back);
+
+		this.finDePartie();
+
+		//JLabel qui s'affiche dans la créations de partie, s'affiche que dans partie encours
+		this.partie = new JLabel(imageBouton);
+		this.partie.setBounds(350,20,270,140);
+		this.partie.setFont(welcome);
+
+		//JLabel qui s'affiche dans la créations de partie, s'affiche que dans partie encours
+		this.score = new JLabel(imageBouton);
+		this.score.setBounds(350,800,270,140);
+		this.score.setFont(welcome);
+		this.score.setIconTextGap( - this.imageBouton.getIconWidth()+40);
+
+	}catch(IOException e) {
+		e.printStackTrace();
+	}
+
+	}
+
+//function création de partie lié au différent boutons
+
+/* fonction de créations de plateau: lorsque l'on clique sur un des boutons:
+on efface la fenetre  (removeall), on utilise le cadre partie pour afficher
+la diificulté de la partie, on ajoute le bouton retourner au menu et le bouton
+fin de partie puis on créé l'instance du modèle puis l'affiche avec un AffPlateau
+enfin, on raffraichit la fenetre avec un fen.repaint()
+*/
+	public void creaFacile(){
+
+		this.facile.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				fen.removeAll();
+				//ajout du cadre de partie
+				partie.setText("facile");
+				partie.setIconTextGap( - imageBouton.getIconWidth()+85);
+				fen.add(partie);
+				//ajout bouton retourMenu
+				fen.add(retourMenu);
+				//ajout bouton din de parties
+				fen.add(finPartie);
+				//création du plateau + affichage
+				plateau  = new CreationPlateau(0);
+	      //plateau.ajoutEcouteur(fen);
+				AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen );//A quel moment on gere la difficulté?
+				System.out.println("Vous avez choisi facile");
+				fen.repaint();
+			}
+		});
+
+	}
+
+	public void creaMedium(){
+		this.medium.addMouseListener(new MouseAdapter(){
+
+			@Override
+			public void mousePressed(MouseEvent e){
+
+				fen.removeAll();
+				//ajout du cadre de partie
+				partie.setText("medium");
+				partie.setIconTextGap( - imageBouton.getIconWidth()+85);
+				fen.add(partie);
+				//ajout bouton retourMenu
+				fen.add(retourMenu);
+				fen.add(finPartie);
+				//plateau.ajoutEcouteur(fen);
+				plateau  = new CreationPlateau(1);
+				AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen );
+				System.out.println("Vous avez choisi medium");
+				fen.repaint();
+			}
+		});
+
+	}
+
+	public void creaDur(){
+		this.difficile.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				fen.removeAll();
+				//ajout du cadre de partie
+				partie.setText("difficile");
+				partie.setIconTextGap( - imageBouton.getIconWidth()+85);
+				fen.add(partie);
+				//ajout bouton retourMenu
+				fen.add(retourMenu);
+				fen.add(finPartie);
+				plateau  = new CreationPlateau(2);
+				//plateau.ajoutEcouteur(fen);
+				AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen);
+				System.out.println("Vous avez choisi une difficulté personnalisée");
+				fen.repaint();
+			}
+		});
+
+	}
+
+	public void creaPerso(){
+		this.personnalise.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+
+				try{
+					int difficult = Integer.parseInt(custom.getText());
+
+					/*si l'on rentre une des difficultés prédéfénis on applique la
+					création du plateau comme pour les trois classes au dessus*/
+					if(difficult  == 3 ){
+						fen.removeAll();
+						plateau  = new CreationPlateau(3);
+						AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen );
+						partie.setText("personnaliséé :"+difficult);
+						partie.setIconTextGap( - imageBouton.getIconWidth()+30);
+						fen.add(partie);
+						fen.add(retourMenu);
+						fen.add(finPartie);
+						fen.repaint();
+					}
+					else if(difficult  == 4 ){
+						fen.removeAll();
+						plateau  = new CreationPlateau(4);
+						AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen );
+						partie.setText("personnaliséé :"+difficult);
+						partie.setIconTextGap( - imageBouton.getIconWidth()+30);
+						fen.add(partie);
+						fen.add(retourMenu);
+						fen.add(finPartie);
+						fen.repaint();
+					}
+					else if(difficult  == 5 ){
+						fen.removeAll();
+						plateau  = new CreationPlateau(5);
+						AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen );
+						partie.setText("personnaliséé :"+difficult);
+						partie.setIconTextGap( - imageBouton.getIconWidth()+30);
+						fen.add(partie);
+						fen.add(retourMenu);
+						fen.add(finPartie);
+						fen.repaint();
+					}
+					else if(difficult  == 6 ){
+						fen.removeAll();
+						plateau  = new CreationPlateau(6);
+						AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen );
+						partie.setText("personnaliséé :"+difficult);
+						partie.setIconTextGap( - imageBouton.getIconWidth()+30);
+						fen.add(partie);
+						fen.add(retourMenu);
+						fen.add(finPartie);
+						fen.repaint();
+					}
+					else{
+						/*si on met un int ne correspondant pas à une difficultée
+						prédéfini, on ajoute du texte dans le JLabel erreur et on
+						l'affiche pour signaler à l'utilisateur qu'il a commis une erreur*/
+						erreur = new JLabel("Rentrez un nombre compris entre 3 et 6");
+						erreur.setForeground(Color.red);
+						erreur.setBounds(350,860,800,20);
+						fen.add(erreur);
+						fen.repaint();
+					}
+
+					fen.repaint();
+
+				}catch (Exception ex) {
+					/*si on reçoit une exception (tableau vide, data de type non int), on fait
+					comme  quand on a un int qui ne correspond pas à une difficulté prédéfini*/
+    			System.err.println(ex);
+					erreur = new JLabel("Rentrez un nombre compris entre 3 et 6");
+					erreur.setForeground(Color.red);
+					erreur.setBounds(350,860,800,20);
+					fen.add(erreur);
+					fen.repaint();
+  			}
+				//plateau.ajoutEcouteur(fen);
+				//AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen);
+				System.out.println("Vous avez choisi une difficultée personnalisée");
+			}
+		});
+
+	}
+
+	//function de retour au menu
+	public void retourAuMenu(){
+		this.retourMenu.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				//supprime tout puis réaffiche élément du menu
+				fen.removeAll();
+				fen.add(txt);
+				fen.add(facile);
+				fen.add(medium);
+				fen.add(difficile);
+				fen.add(personnalise);
+				fen.add(ennonce);
+				fen.add(custom);
+				fen.repaint();
+			}
+		});
+	}
+
+	//function fin de partie
+	public void finDePartie(){
+		this.finPartie.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				//calcul du score +  affichage dans un Jlabel
+				int scoreF = plateau.gestionDesScores();
+				//plateau.finDePartie("pseudal"); commentez pour le moment car provoque erreur si clique deux d=fois de suite dessus
+				score.setText("score:"+scoreF);
+				fen.add(score);
+				fen.repaint();
+			}
+		});
+	}
+}

@@ -1,0 +1,30 @@
+package Vue;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.applet.Applet;
+import Modele.*;
+import Controlleur.*;
+
+
+public class Fenetre extends JPanel{
+
+  protected Color background;
+
+  public Fenetre(){
+    super();
+    this.setLayout(null);
+    this.background = new Color(100, 131, 105);
+    Menu menu = new Menu(this);
+    this.repaint();
+  }
+
+  @Override
+  public void paintComponent(Graphics g){
+    super.paintComponent(g);
+    //fond d'écran
+    g.setColor(this.background);
+    g.fillRect(0,0,this.getWidth(),this.getHeight());
+  }
+}

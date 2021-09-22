@@ -1,0 +1,22 @@
+package Vue;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import Modele.*;
+
+public class Affichage extends JFrame{
+
+	public Affichage(){
+
+		this.setTitle("WIP Jeu d'assemblage de forme");
+		Fenetre fen = new Fenetre();
+		this.setPreferredSize(new Dimension(1000,750));
+		this.setResizable(true);
+		this.setContentPane(fen);
+		this.pack();
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+}

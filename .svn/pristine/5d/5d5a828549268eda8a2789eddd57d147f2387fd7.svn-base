@@ -1,0 +1,25 @@
+package Vue;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import Modele.*;
+
+public class Affichage extends JFrame{
+
+	protected JPanel panel = new JPanel();
+
+	public Affichage(){
+
+		this.setTitle("WIP Jeu d'assemblage de forme");
+		this.setSize(1000,1000);
+		Fenetre fen = new Fenetre();
+		this.panel.setLayout(new GridLayout(1,1));
+		this.panel.add(fen);
+		this.setResizable(true);
+		this.setContentPane(panel);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+}

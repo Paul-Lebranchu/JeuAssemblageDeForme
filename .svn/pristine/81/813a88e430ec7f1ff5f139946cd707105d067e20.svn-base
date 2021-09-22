@@ -1,0 +1,88 @@
+package Vue;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+import Modele.*;
+import Controlleur.*;
+
+public class Menurefait extends JPanel{
+
+	protected JButton facile;
+	protected JButton medium;
+	protected JButton difficile;
+
+
+	public Menurefait(){
+
+		this.setLayout(null);
+
+		JLabel txt = new JLabel("Bienvenue dans le menu de selection des niveaux. Veuillez choisir parmi facile (0), medium (1), difficile (2) ou custom (de 3 à 6)");
+		txt.setBounds(40,80,1000,20);
+		this.add(txt);
+
+		this.facile = new JButton("facile");
+		this.facile.setBounds(400,160,200,20);
+		this.add(this.facile);
+		creaFacile();
+
+		this.medium = new JButton("medium");
+		this.medium.setBounds(400,240,200,20);
+		this.add(this.medium);
+		creaMedium();
+
+		this.difficile = new JButton("difficile");
+		this.difficile.setBounds(400,320,200,20);
+		this.add(this.difficile);
+		creaDur();
+
+		JLabel ennonce = new JLabel("custom");
+		ennonce.setBounds(400,400,200,20);
+		this.add(ennonce);
+
+		JTextField custom = new JTextField();
+		custom.setBounds(400,420,200,20);
+		this.add(custom);
+		//custom.addMouseListener(new MouseAdapter())
+
+		this.repaint();
+	}
+
+	//Plateau platterm = new Plateau(5, 5);
+	//JPanel panel = this;
+
+	public void creaFacile(){
+		this.facile.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				//AffPlateau plataff = new AffPlateau(platterm, panel);//A quel moment on gere la difficulté?
+				System.out.println("Vous avez choisi facile");
+			}
+		});
+
+	}
+
+	public void creaMedium(){
+		this.medium.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				//AffPlateau plataff = new AffPlateau(platterm, panel);//A quel moment on gere la difficulté?
+				System.out.println("Vous avez choisi medium");
+			}
+		});
+
+	}
+
+	public void creaDur(){
+		this.difficile.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				//AffPlateau plataff = new AffPlateau(platterm, panel);//A quel moment on gere la difficulté?
+				System.out.println("Vous avez choisi difficile");
+			}
+		});
+
+	}
+
+}

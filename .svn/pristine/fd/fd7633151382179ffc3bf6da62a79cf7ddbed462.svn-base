@@ -1,0 +1,13 @@
+package Vue;
+
+import Modele.*;
+
+public class Main{
+
+	public static void main(String[] args) {
+
+
+		Affichage aff = new Affichage();
+	}
+
+}

@@ -1,0 +1,523 @@
+package Vue;
+
+//gestion des images
+import java.io.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+import java.util.ArrayList;
+
+import piece.*;
+import Modele.*;
+import Controlleur.*;
+
+public class Menu extends JPanel implements EcouteurModel{
+
+
+	//instance du Modele
+	protected CreationPlateau plateau;
+
+	//pièce selectionné
+	protected PiecesPuzzle piece;
+
+	//les boutons
+	protected JButton facile;
+	protected JButton medium;
+	protected JButton difficile;
+	protected JButton personnalise;
+	protected JButton retourMenu;
+	protected JButton finPartie;
+	protected JButton partieEnCours;
+	protected JButton control;
+
+	//liste des boutons du Jeu
+	ArrayList<JButton> caseJeu;
+
+	//les textes
+	protected JLabel txt;
+	protected JLabel controlleur;
+	protected JLabel ennonce;
+	protected JLabel erreur;
+	protected JLabel partie;
+	protected JLabel score;
+	protected JLabel scoreIA;
+	protected JTextField custom;
+
+	//la fenêtre de jeu
+	protected JPanel fen;
+
+	//boolean permettant de savoir si la partie est fini ou non
+	protected boolean fin;
+
+	//les différentes images
+	protected ImageIcon imageBouton;
+	protected ImageIcon imagePanneau;
+
+	//afficheurPlateau
+	protected AffPlateau plataff;
+
+	//couleur de fond
+	protected Color back = new Color(100, 131, 105);
+
+	//paramètre police
+	protected Font welcome = new Font("Arial", Font.ITALIC + Font.BOLD, 20);
+
+	public Menu(JPanel fen){
+		//création des images de fond
+		try{
+
+			this.fen   = fen;
+
+			//lien où l'on a trouvé l'image :https://www.pinterest.fr/pin/686447168193725811/ image pour les boutons
+			BufferedImage planche = ImageIO.read(new File("../image/planche.jpg"));
+			this.imageBouton = new ImageIcon(planche);
+			//lien ou touvé l'image : https://www.pinterest.fr/pin/628111479268298123/ image pour le panneau
+			BufferedImage panneau = ImageIO.read(new File("../image/panneau.jpg"));
+			this.imagePanneau = new ImageIcon(panneau);
+
+			//configuration du titre panneau principal du menu
+			this.txt = new JLabel(imagePanneau,JLabel.CENTER);
+			this.txt.setText("<html><br><br><center>Bienvenue dans le menu de selection des niveaux! <br> Veuillez choisir votre difficulté : <br> facile (0), medium (1), difficile (2) ou custom (de 3 à 6)</center></html>");
+			this.txt.setIconTextGap( - this.imagePanneau.getIconWidth()+150);
+			this.txt.setBounds(50,00,900,220);
+			this.txt.setFont(welcome);
+			this.fen.add(this.txt);
+
+			//configuration du boutton
+			this.facile = new JButton(imageBouton);//boutton avec image
+			//text +police
+			this.facile.setText("facile");
+			this.facile.setFont(welcome);
+			//place du texte sur l'image
+			this.facile.setIconTextGap( - this.imageBouton.getIconWidth()+100);
+			//Place du boutton dans le Jpanel
+			this.facile.setBounds(350,240,270,111);
+			this.facile.setBackground(back);
+
+			//ajout du bouton a la fentre + activation de sa méthode lorsqu'on clique dessus
+			this.fen.add(this.facile);
+			this.creaFacile();
+
+			//même chose pour la difficulté medium
+			this.medium = new JButton(imageBouton);
+			this.medium.setBounds(350,370,270,111);
+			this.medium.setText("medium");
+			this.medium.setFont(welcome);
+			this.medium.setIconTextGap( - this.imageBouton.getIconWidth()+85);
+			this.medium.setBackground(back);
+
+			this.fen.add(this.medium);
+			this.creaMedium();
+
+			//même chose pour la difficulté difficile
+			this.difficile = new JButton(imageBouton);
+			this.difficile.setBounds(350,510,270,111);
+			this.difficile.setText("difficile");
+			this.difficile.setFont(welcome);
+			this.difficile.setIconTextGap( - this.imageBouton.getIconWidth()+85);
+			this.difficile.setBackground(back);
+
+			this.fen.add(this.difficile);
+			this.creaDur();
+
+			//même chose pour la difficulté personnalisée
+			this.personnalise = new JButton(imageBouton);
+			this.personnalise.setBounds(350,650,270,111);
+			this.personnalise.setText("personnalisée");
+			this.personnalise.setFont(welcome);
+			this.personnalise.setIconTextGap( - this.imageBouton.getIconWidth()+50);
+			this.personnalise.setBackground(back);
+
+			this.fen.add(this.personnalise);
+			this.creaPerso();
+
+			//partie concenant le bouton pour les parties personnalisées
+			this.ennonce = new JLabel("custom");
+			this.ennonce.setFont(welcome);
+			this.ennonce.setBounds(450,770,200,80);
+			this.fen.add(this.ennonce);
+
+			this.custom = new JTextField();
+			this.custom.setBounds(350,830,270,20);
+			this.fen.add(this.custom);
+
+			//bouton de retour au menu: s'affiche uniquement en partie en cours
+			this.retourMenu = new JButton(imageBouton);
+			this.retourMenu.setBounds(70,800,270,111);
+			this.retourMenu.setText("Retour au menu");
+			this.retourMenu.setFont(welcome);
+			this.retourMenu.setIconTextGap( - this.imageBouton.getIconWidth()+40);
+			this.retourMenu.setBackground(back);
+
+			this.retourAuMenu();
+
+			//bouton retour à la partie en cours
+			this.partieEnCours = new JButton(imageBouton);
+			this.partieEnCours.setBounds(70,800,270,111);
+			this.partieEnCours.setText("Retour à la partie");
+			this.partieEnCours.setFont(welcome);
+			this.partieEnCours.setIconTextGap( - this.imageBouton.getIconWidth()+30);
+			this.partieEnCours.setBackground(back);
+
+			this.enCours();
+
+			//bouton de fin de partie
+			this.finPartie = new JButton(imageBouton);
+			this.finPartie.setBounds(650,800,270,111);
+			this.finPartie.setText("Fin de partie");
+			this.finPartie.setFont(welcome);
+			this.finPartie.setIconTextGap( - this.imageBouton.getIconWidth()+40);
+			this.finPartie.setBackground(back);
+
+			this.finDePartie();
+
+			//bouton control
+			this.control = new JButton(imageBouton);
+			this.control.setBounds(650,800,270,111);
+			this.control.setText("Control");
+			this.control.setFont(welcome);
+			this.control.setIconTextGap( - this.imageBouton.getIconWidth()+40);
+			this.control.setBackground(back);
+			this.fen.add(this.control);
+
+			this.commande();
+
+			//paneau de commande
+			this.controlleur = new JLabel(imagePanneau,JLabel.CENTER);
+			this.controlleur.setText("<html><center><br><br><br>Voici les commandes du jeu! <br> <u>selection piece :</u> clique gauche souris  <br> Lorsqu'une pièce est sélectionnée :  <br> <u> déplacement pièce :</u> clique droit souris <br> <u> rotation piece :</u> barre d'espace </center></html>");
+			this.controlleur.setIconTextGap( - this.imagePanneau.getIconWidth()+220);
+			this.controlleur.setBounds(50,200,900,220);
+			this.controlleur.setFont(welcome);
+
+			//JLabel qui s'affiche dans la créations de partie, s'affiche que dans partie encours
+			this.partie = new JLabel(imageBouton);
+			this.partie.setBounds(350,20,270,111);
+			this.partie.setFont(welcome);
+
+			//JLabel qui s'affiche dans la créations de partie, s'affiche que dans partie encours
+			this.score = new JLabel(imageBouton);
+			this.score.setBounds(350,800,270,111);
+			this.score.setFont(welcome);
+			this.score.setIconTextGap( - this.imageBouton.getIconWidth()+40);
+
+			//JLabel qui s'affiche dans la créations de partie, s'affiche que dans partie encours
+			this.scoreIA = new JLabel(imageBouton);
+			this.scoreIA.setBounds(650,800,270,111);
+			this.scoreIA.setFont(welcome);
+			this.scoreIA.setIconTextGap( - this.imageBouton.getIconWidth()+40);
+
+			//initialisation du boolean fin de partie
+			this.fin = true;
+
+		}catch(IOException e) {
+			e.printStackTrace();
+			//creation du jeu sans les images
+		}
+	}
+
+//function création de partie lié au différent boutons
+
+/* fonction de créations de plateau: lorsque l'on clique sur un des boutons:
+on efface la fenetre  (removeall), on utilise le cadre partie pour afficher
+la diificulté de la partie, on ajoute le bouton retourner au menu et le bouton
+fin de partie puis on créé l'instance du modèle puis l'affiche avec un AffPlateau
+enfin, on raffraichit la fenetre avec un fen.repaint()
+*/
+	public void creaFacile(){
+
+		this.facile.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				creaPlat(0,"facile",( - 260+85)); //260 correspond à la largeur de l'image du bouton, nous plaçons la valeur brut pour que le jeu marche même sans l'image
+			}
+		});
+
+	}
+
+	public void creaMedium(){
+		this.medium.addMouseListener(new MouseAdapter(){
+
+			@Override
+			public void mousePressed(MouseEvent e){
+				creaPlat(1,"medium",( - 260 +85));
+			}
+		});
+
+	}
+
+	public void creaDur(){
+		this.difficile.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				creaPlat(2,"difficile",( - 260+85));
+			}
+		});
+
+	}
+
+	public void creaPerso(){
+		this.personnalise.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+
+				try{
+
+					int difficult = Integer.parseInt(custom.getText());
+
+					/*si l'on rentre une des difficultés prédéfénis on applique la
+					création du plateau comme pour les trois classes au dessus*/
+					if(difficult  == 3 ){
+						creaPlat(3,"personnaliséé : 3",( - 260+30));
+					}
+					else if(difficult  == 4 ){
+						creaPlat(4,"personnaliséé : 4",( - 260 +30));
+					}
+					else if(difficult  == 5 ){
+						creaPlat(5,"personnaliséé : 5",( - 260 +30));
+					}
+					else if(difficult  == 6 ){
+						creaPlat(6,"personnaliséé : 6",( - 260 +30));
+					}
+					else{
+						/*si on met un int ne correspondant pas à une difficultée
+						prédéfini, on ajoute du texte dans le JLabel erreur et on
+						l'affiche pour signaler à l'utilisateur qu'il a commis une erreur*/
+						erreur = new JLabel("Rentrez un nombre compris entre 3 et 6");
+						erreur.setForeground(Color.red);
+						erreur.setBounds(350,860,800,20);
+						fen.add(erreur);
+						fen.repaint();
+					}
+
+					fen.repaint();
+
+				}catch (Exception ex) {
+					/*si on reçoit une exception (tableau vide, data de type non int), on fait
+					comme  quand on a un int qui ne correspond pas à une difficulté prédéfini*/
+    			System.err.println(ex);
+					erreur = new JLabel("Rentrez un nombre compris entre 3 et 6");
+					erreur.setForeground(Color.red);
+					erreur.setBounds(350,860,800,20);
+					fen.add(erreur);
+					fen.repaint();
+  			}
+				//plateau.ajoutEcouteur(fen);
+				//AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen);
+				System.out.println("Vous avez choisi une difficultée personnalisée");
+			}
+		});
+
+	}
+
+	//function de retour au menu
+	public void retourAuMenu(){
+		this.retourMenu.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				//supprime tout puis réaffiche élément du menu
+				fen.removeAll();
+				fen.add(txt);
+				fen.add(facile);
+				fen.add(medium);
+				fen.add(difficile);
+				fen.add(personnalise);
+				fen.add(ennonce);
+				fen.add(control);
+				fen.add(custom);
+				//si la partie est pas fini, ajoute un bouton qui permet d'y retourner
+				if(fin == false){
+					fen.add(partieEnCours);
+				}
+				fen.repaint();
+			}
+		});
+	}
+
+	//fonction affichant les control du Jeu
+	public void commande(){
+		this.control.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				//supprime tout puis réaffiche élément du menu
+				fen.removeAll();
+				partie.setText("Control");
+				partie.setIconTextGap(- 260+85);
+				fen.add(partie);
+				fen.add(controlleur);
+				fen.add(retourMenu);
+				fen.repaint();
+			}
+		});
+
+	}
+
+
+
+	//fonction fin de partie
+	public void finDePartie(){
+		this.finPartie.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				fin = true;
+				//calcul du score +  affichage dans un Jlabel
+				int scoreF = plateau.gestionDesScores();
+				String scoreIAF = plateau.intelArtif();
+				//demande à l'utilisateur de rentrer un pseudo pour les scores
+				String pseudo;
+				pseudo = JOptionPane.showInputDialog(null, "Rentrez votre pseudo pour rentrer dans l'histoire!");
+				//termine la partie et retire le bouton fin de partie
+				plateau.finDePartie(pseudo);
+				fen.remove(finPartie);
+				//ajoute les JLabel avec le score du joueur et le score de l'ia
+				score.setText("score : "+scoreF);
+				scoreIA.setText("score IA : "+scoreIAF);
+				fen.add(score);
+				fen.add(scoreIA);
+				fen.repaint();
+			}
+		});
+	}
+
+	//fonction permettant de retourner sur la partie en cours
+	public void enCours(){
+		this.partieEnCours.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				fen.removeAll();
+				fen.add(partie);
+				fen.add(retourMenu);
+				fen.add(finPartie);
+				plataff.reaffich();
+				fen.repaint();
+
+			}
+		});
+	}
+
+	//function créant le plateau et lançant la partie
+	public void creaPlat(int niveau,String txt, int gap){
+		//boolean permettant de savoir si partie finie remis à false
+		fin =false;
+		//efface la fenetre
+		fen.removeAll();
+		//création + affichage du plateau
+		plateau  = new CreationPlateau(niveau);
+		plataff = new AffPlateau(plateau.getPlateau(), fen );
+		//réglage des zones de texte et bouton de gestion de menu
+		partie.setText(txt);
+		partie.setIconTextGap(gap);
+		fen.add(partie);
+		fen.add(retourMenu);
+		fen.add(finPartie);
+		//raffraichissement de la fenêtre
+		fen.repaint();
+		//ajout des boutons de jeu dans la liste des boutons jouable
+		caseJeu = plataff.getListeBouton();
+		plateau.ajoutEcouteur(this);
+		//ajout des événèment aux différentes cases:
+		this.selectPiece();
+		this.deplacement();
+		this.rotation();
+		this.fantomePiece();
+
+	}
+
+
+	//fonction lié au action de jeu
+	public void selectPiece(){
+		for(JButton bout: caseJeu){
+			bout.addMouseListener(new MouseAdapter(){
+				@Override
+				public void mousePressed(MouseEvent e){
+
+					int casseClique  = caseJeu.indexOf(e.getSource());
+
+					int i = casseClique/plateau.getPlateau().getLargeur();
+					int j = casseClique%plateau.getPlateau().getLargeur();
+
+					if(plateau.getPlateau().getTab2()[i][j]!=0 && e.getButton() == 1){//clique droit
+						int numPiece = plateau.getPlateau().getTab2()[i][j];
+						System.out.println(numPiece);
+						piece = plateau.getListePiece().get(numPiece-1);
+					}
+				}
+			});
+		}
+	}
+
+	public void rotation(){
+		for(JButton bout: caseJeu){
+			bout.addKeyListener(new KeyListener(){
+
+				@Override
+        public void keyTyped(KeyEvent e) {}
+
+				@Override
+				public void keyPressed(KeyEvent e){
+					if(piece != null && e.getKeyCode() == 32){//barre d'espace
+						System.out.println(e.getKeyCode());
+						System.out.println("rotation");
+						plateau.rotation(piece);
+						fantomePiece();
+					}
+				}
+
+				@Override
+        public void keyReleased(KeyEvent e){}
+			});
+		}
+	}
+
+	public void deplacement(){
+		for(JButton bout: caseJeu){
+			bout.addMouseListener(new MouseAdapter(){
+				@Override
+				public void mousePressed(MouseEvent e){
+					if(piece != null && e.getButton() == 3){//clique gauche
+						int casseClique  = caseJeu.indexOf(e.getSource());
+
+						int i = casseClique/plateau.getPlateau().getLargeur();
+						int j = casseClique%plateau.getPlateau().getLargeur();
+
+						plateau.deplacer(piece,i,j);
+						System.out.println(plateau.getPlateau());
+						//reinitialisation de la pièce à null
+						piece = null;
+						modelMiseAJour(this);
+					}
+				}
+			});
+		}
+	}
+
+	public void fantomePiece(){
+		for(JButton bout: caseJeu){
+			bout.addMouseListener(new MouseAdapter(){
+				@Override
+				public void mouseEntered(MouseEvent e){
+					if(piece != null){
+						int[][] tab = piece.getPiece();
+						for(int i = 0; i < piece.getHauteur; i++){
+							for(int j = 0; j<piece.getLargeur; j++){
+								System.out.println(""+tab[i][j]);
+							}
+						}
+					}
+				}
+			});
+		}
+	}
+
+	@Override
+  public void modelMiseAJour(Object source){
+		caseJeu = plataff.getListeBouton();
+		System.out.println(caseJeu.size());
+		//mise à jour de la vue
+		plataff.maj();
+		fen.repaint();
+  }
+}

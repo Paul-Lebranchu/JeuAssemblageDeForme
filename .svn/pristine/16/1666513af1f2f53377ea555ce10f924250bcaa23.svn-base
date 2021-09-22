@@ -1,0 +1,17 @@
+Jeu d'assemblage: notice
+
+
+Membre du groupe:
+
+Bauchez Marguerite
+Cocquerez Olivier
+Lebranchu Paul
+Lemaire Raphaelle
+
+.Pour compiler le projet, rentrer la commande ant dans un terminal ouvert dans ce repertoire, vous pouvez testé le mode de jeu terminal à l'interieur.
+
+.pour lancer le jeu, vous pouvez lancer la commande "java -jar dist/livraison-0.1.jar" dans une console ouverte dans ce repertoire. Pour l'instant, l'application n'est jouable qu'en mode console et la collision des pièces ne marche pas/l'IA n'est pas encore implanter
+
+.A venir: un mode visuel où l'on pourra jouer avec une interface graphique
+
+PS: les classes nécessaire à la création des pièces ont été créé à partir du repertoire "piecesPuzzle" qui se trouve à la racine à coté du repertoire livraison

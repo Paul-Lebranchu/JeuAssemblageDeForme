@@ -1,0 +1,96 @@
+package Vue;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import Modele.*;
+
+public class AffPlateau extends JPanel /*implements EcouteurModel*/{
+
+	protected int x, y;
+	protected int [][] contenu;
+	protected JPanel panel;
+	protected ArrayList<JButton> playButton;
+	/*protected ArrayList<Color> couleur = new ArrayList<Color>();
+	couleur.add(Color.red);
+	couleur.add(Color.green);
+	couleur.add(Color.blue);
+	couleur.add(Color.yellow);
+	couleur.add(Color.orange);
+	couleur.add(Color.cyan);*/
+
+	public AffPlateau(Plateau platterm, JPanel panel){
+		this.x = platterm.getHauteur();
+		this.y = platterm.getLargeur();
+		this.contenu = platterm.getTab2();
+		this.panel = panel;
+		this.playButton =new ArrayList<JButton>();
+		//this.panel.setLayout(new GridLayout(x,y));
+		this.creaPlat();
+
+
+	}
+
+	//function qui va créé les boutons symbolisant le plateau de jeu
+	public void creaPlat(){
+		for(int i = 0; i < x; i++){
+			for(int j = 0; j < y; j++){
+				int val = contenu[i][j];
+				//créé un bouton pour chaque case du Plateau de jeu mis en paramètre et le positionne
+				JButton bout = new JButton();
+				bout.setBounds(25+40*j,200+40*i,40,40);
+
+				//si la valeur contenu dans la case du tableau est différente de 0, on met une couleur de fond pour symboliser la pièce
+				if(val != 0){
+					int valMod = val%8;
+					switch(valMod){
+						case 0:
+							bout.setBackground(new Color(255,255,25));
+							break;
+						case 1:
+							bout.setBackground(new Color(0,230,0));
+							break;
+						case 2:
+							bout.setBackground(new Color(0,230,191));
+							break;
+						case 3:
+							bout.setBackground(new Color(179,0,0));
+							break;
+						case 4:
+							bout.setBackground(new Color(106,0,128));
+							break;
+						case 5:
+							bout.setBackground(new Color(22,22,168));
+							break;
+						case 6:
+							bout.setBackground(new Color(255,0,255));
+							break;
+						case 7:
+							bout.setBackground(new Color(255,42,0));
+							break;
+					}
+				}
+				//sinon, on met du blanc comme couleur de fond
+				else{
+					bout.setBackground(new Color(255,255,255));
+				}
+				playButton.add(bout);
+				panel.add(bout);
+			}
+		}
+	}
+
+	//acceseur de la liste des boutons: à utiliser dans menu pour ajouter les évènement dessus
+	public ArrayList<JButton> getListeBouton(){
+		return this.playButton;
+	}
+
+	//réaffichage du plateau en cas de retour à la partieEnCours
+	public void reaffich(){
+		for(JButton b: this.playButton){
+			panel.add(b);
+		}
+	}
+
+}

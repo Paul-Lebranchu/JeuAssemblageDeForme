@@ -1,0 +1,116 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}%encodage des caractères
+\usepackage{blindtext}
+\usepackage[T1]{fontenc}%encodage de la police
+\usepackage[french]{babel}%langue française
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[ruled,noline]{algorithm2e}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{float}
+\usepackage{array}
+
+
+\usepackage{url}
+\usepackage{sectsty}
+\usepackage{xcolor}
+
+\usepackage{titling}%ajout de texte sur et sous le titre
+
+%lien sans bordure
+\usepackage[hypertexnames=false, pdftex]{hyperref}
+\hypersetup{ colorlinks = true, linkcolor = black, urlcolor = red , citecolor = blue }
+
+\definecolor{color_section}{RGB}{145,7,7}
+\definecolor{color_subsection}{RGB}{120,40,40}
+\definecolor{color_subsubsection}{RGB}{180, 40, 40}
+\sectionfont{\color{color_section}\underline}
+\subsectionfont{\color{color_subsection}\underline \small}
+\subsubsectionfont{\color{color_subsubsection}\small}
+
+
+\title{\hrulefill \vspace{15pt} \\ \huge \textbf{Jeu d'assemblage de formes} \\ \vspace{20pt} \hrulefill  \small \textit{Méthode de conception logiciel\hrulefill \vspace{40pt}}}
+
+\author{ Marguerite Bauchez 21803320 \and Olivier Cocquerez 21803239  \and Paul Lebranchu 21403460 \and Raphaelle Lemaire 21802756  }
+
+\date{}	
+\input{insbox}
+
+\begin{document}
+	
+	
+	
+\begin{titlepage}
+
+     \renewcommand{\maketitlehooka}{
+     
+
+     \begin{flushright} \today \end{flushright}
+     
+     \includegraphics[scale=1]{Images/logo.png}
+     
+     \vspace{65pt}}
+	
+	
+	\renewcommand{\maketitlehookd}{
+	\vspace{65pt}
+		
+	\begin{flushright} L3 informatique \\ Groupe 1B \\ 2020-2021
+	\end{flushright}
+	}
+     
+	\maketitle
+	
+	\setcounter{page}{0}
+\end{titlepage}
+
+
+\newpage
+\tableofcontents
+\setcounter{page}{0}
+\newpage
+
+\section*{Introduction}
+
+	Le jeu d'assemblage de forme est un jeu de puzzle où l'on doit constituer une forme à l'aide de différentes pièces de forme et de taille aléatoire de façon à ce que la forme puisse rentrer dans un rectangle dont la taille devra être la plus petite possible.
+Afin de réaliser ce jeu, nous avons utiliser le langage de programmation objet Java et fait un dépôt sur SVN pour pouvoir travailler même à distance. Ce jeu sera aussi jouable dans le terminale de commande. 
+
+
+\section{Présentations}
+
+\subsection{Modèle}
+
+\subsection{Vue}
+
+\subsection{Contrôleur}
+
+\section{Organisation du projet}
+
+\subsection{Répartition des taches}
+
+\subsection{Gestion du projet}
+
+\section{Architecture du projet}
+
+\subsection{Diagramme de classe/module}
+
+\begin{center}
+\includegraphics[scale=0.35]{Images/libPiece.png}
+\end{center}
+
+La librairie pièce nous permet de construire les différentes pièces de jeu. Elle utilise le design pattern strategy: elle est composé d'une interface (InterfacePiece) qui nous donne les propriété à implémenter pour les différentes pièces (rotation et déplacement), une classe abstraite qui définit les spécificités des pièces de notre jeu en particulier: cette classe défini les paramètres des pièces:leur position x et y, leur taille minimale et maximale, leur largeur, leur hauteur, le tableau définissant la pièce (rempli avec des 1 et des 0), leur couleur et leur identifiant. C'est cette classe qui définit la rotation des pièces(rotation de la tableau définissant la pièce) et leur déplacement: la fonction prend en paramètre un entier x et un entier y qui seront les nouvelles coordonnées de la pièce. Ensuite, chaque sous-classe définit les spécificité de sa pièce (par exemple, pour une pièce de type O, la largeur et la hauteur doivent être identique) et créé la pièce en utilisant sa version du createPiece().Nous trouvons également dans ce package une classe PieceFactory (pattern Factory) qui nous permet de créé des instance d'un objet en fonction du type qu'on lui a attribué en paramètre.
+
+\subsection{Cas d'utilisation}
+
+\InsertBoxR{0}{\quad\includegraphics[scale=0.3]{Images/utilisateur.png}\quad}
+L'utilisateur aura plusieurs actions à faire. Dans un premier temps, il devra créé une partie: Pour cela, il pourra soit créé une nouvelle partie, soit charger une configuration de partie déjà existante. Une fois la partie créée, la partie pourra commencer. Le joueur devra alors sélectionner une pièce et aura la possibilité de la déplacer et/ou de la faire tourner. Une fois que le joueur aura terminer de disposer les pièces dans le plateau et qu'il ne pense pas pouvoir faire mieux, il validera son plateau. A ce moment, une IA se lancera pour calculer la meilleur configuration des pièces possibles et dira au joueur si il aurait pu mieux faire ou non. Une fois que l'IA aura fini son calcul, le joueur pourra enregistrer son score et lancer une nouvelle partie ou quitter le jeu.
+
+\section{Éléments Technique}
+
+\section*{Conclusion}
+
+\section*{Références}
+
+\end{document}

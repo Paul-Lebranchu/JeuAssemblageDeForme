@@ -1,0 +1,131 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Modele;
+import piece.*;
+import java.util.*;
+/**
+ *
+ * @author raphaelle
+ */
+public class Collision{
+
+	protected ArrayList<PiecesPuzzle> pieces;
+	protected Plateau plateau;
+	/**on créer un constructeur prenant deux arguments, une liste de pieces et un plateau afin de pouvoir verifier les collision des pieces entre elles et avec le plateau**/
+	Collision(ArrayList<PiecesPuzzle> pieces, Plateau plateau){
+        this.pieces = pieces;
+        this.plateau = plateau;
+    }
+	/**cette méthode nous permet de savoir si la piece est bien dans le plateau, si oui, on renvois true sinon false**/
+    public ArrayList<Boolean> dansPlateau(){
+
+		/**cette partie de la méthode nous permet de parcourir la liste de piece**/
+		//on initialise une liste de boolean
+		ArrayList<Boolean> listeBool = new ArrayList<Boolean>();
+		for(int i=0; i< pieces.size(); i++){
+
+			//on récupère le pièce de la liste d'indice i
+			PiecesPuzzle premierePiece = this.pieces.get(i);
+
+			//on recupère le X et le Y de la piece concernée qui provient de la liste de piece entrée en paramètre du constructeur
+			int coordonneeX = premierePiece.getX();
+			int coordonneeY = premierePiece.getY();
+
+			//on récupère ici la longueur et la largeur de la piece pour savoir par la suite si elle dépasse du plateau
+			int pieceHauteur = premierePiece.getHauteur();
+			int pieceLargeur = premierePiece.getLargeur();
+
+			//on récupère ici la longueur et la largeur du plateau pour pouvoir comparrer par la suite avec la piece
+			int plateauLargeur = plateau.getLargeur();
+			int plateauHauteur = plateau.getHauteur();
+
+			/**cette partie de la méthode vérifie que la pièce et bien dans le plateau grâce à une boucle if
+			 * pour la boucle if:
+			 * 		coordonneeY + pieceHauteur >= plateauHauteur cert à vérifier si la pièce ne dépasse pas dans la hauteur
+			 * 		coordonneeX + pieceLargeur >= plateauLargeur nous permet de savoir si la pièce dépasse dans le largeur
+			 * 		coordonneeX >=0 permet de savoir si la pièce est bien dans le tableau das le sens ou, la pièce à une coordonnée superieur à o en X (en ordonnée donc)
+			 * 		coordonneeY >=0 permet de savoir si la pièce est bien dans le tableau en abscisse dans le sens ou elle doit être supérieur à 0.
+			 * ainsi, une fois toute ces conditions acceptées on rentre true dans un tableau.**/
+			if((coordonneeY + pieceHauteur <= plateauHauteur) && (coordonneeX + pieceLargeur <= plateauLargeur) && (coordonneeX >=0) && coordonneeY >=0){
+				listeBool.add(true);
+			}else{
+				listeBool.add(false);
+			}
+		}
+		return listeBool;
+	}
+	
+	/**cette méthode nous permet de parcourir le plateau en verifiant si oui ou non la pièce que nous voulons y placer peux y etre placé.
+	 * ainsi, on cherche sur la largeur et la hauteur de la pièce si la pièce et le plateau contiennent ou non un 1.
+	 * Si tout deux contiennent un 1 alors on retourne feux sinon la pièce peut se poser.*/
+	public Boolean collisionPiece(PiecesPuzzle piece, Plateau plateau){
+		//il faut parcourir le plateau là ou l'on veut poser la pièce donc de x, y a getlargeur gethauteur
+		int[][] plateau2 = plateau.getTab2();
+		int[][] laPiece = piece.getPiece();
+		
+		for(int i=piece.getX(); i< piece.getLargeur(); i++){
+			for(int j=piece.getY(); j < piece.getHauteur(); j++){
+				if(plateau2[i][j] !=0 && laPiece[i][j] !=0){
+					return false;
+				}
+			}
+		} 
+		return true;
+	}
+
+	/*//0 quand ya pas de piece et 1 quand yen a
+	/**cette partie de la classe eprmet de savoir si deux pièce se supperpose où non en rentrant l'id de la pièce que l'on déplace.
+	 * lorsque l'on a un 1, c'est qu'il existe une pièce, 0 quand il n'en existe pas à cette endroit.
+	 * les pièce sont des tableau en deux dimension rempli de 1 et de 0
+	public ArrayList<Boolean> surPiece(int idDePiece){
+		/**la pièce que l'on déplace s'appelle ici laPiece et bool permet de savoir si oui ou non la pièce touche une autre pièce
+		PiecesPuzzle laPiece = this.pieces.get(idDePiece);
+		ArrayList<Boolean> listeBool = new ArrayList<Boolean>();
+		Boolean bool = true;
+		
+		//on parcourt la liste des pièces
+		for(int i=0; i< pieces.size(); i++){
+			/**premierePiece est ici la pièce avec la quelle on cherche si il y a une interaction.
+			 * on recupère ces coordonnées X et Y en coordonneeX et coordonne
+			 * de meme pour la hauteur et la largeur en tant que pieceHauteur et pieceLargeur.
+			PiecesPuzzle premierePiece = this.pieces.get(i);
+
+			int coordonneeX = premierePiece.getX();
+			int coordonneeY = premierePiece.getY();
+
+			int pieceHauteur = premierePiece.getHauteur();
+			int pieceLargeur = premierePiece.getLargeur();
+			
+			//avant de tester avec la pièce, on verifie que cette dernière à un id dans le tableau different qu celui de la pièce que l'on souhaite déplacer.
+			if(i!=idDePiece){
+				/**on verifie ici par une première boucle if que, les deux pièces ce connaissent, c'est à dire qu'elle interagissent ensemble.
+				 * pour celà on verifi, que la coordonnée de notre pièce(la pièce avec l'id rentrée en paramètre) comprend les coordonnées de la pièces avec la quelle on veut tester une interaction et inversement.
+				 * ensuite on passe dans deux boucles for pour parcourir la pièce et verifier que cette dernière ne peut pas se poser à cette endroit.
+				 * on renvois ainsi un tableau de boolèen
+				if(coordonneeY >= laPiece.getY()+laPiece.getHauteur() || coordonneeX >= laPiece.getX()+laPiece.getLargeur() || coordonneeY <= laPiece.getY()+laPiece.getHauteur() || coordonneeX <= laPiece.getX()+laPiece.getLargeur()		||		laPiece.getY() >= coordonneeY+laPiece.getHauteur() || laPiece.getX() >= coordonneeX+laPiece.getLargeur() || laPiece.getY() <= coordonneeY+laPiece.getHauteur() || laPiece.getX()<= coordonneeX +laPiece.getLargeur()){
+					for(int k=0; k< pieceHauteur; k++){
+						for(int j=0; j< pieceLargeur; j++){
+							if(premierePiece.getHauteur() > j || premierePiece.getLargeur() >k || laPiece.getHauteur() >j || laPiece.getLargeur() >k){
+								bool =true;
+							}else{
+								if(premierePiece.getPiece()[k][j] == 1 && laPiece.getPiece()[k][j] == 1){
+									bool =false;
+								}else{
+									bool=true;
+								}
+							}
+						}
+					}
+				}else{
+					bool =false;
+				}
+			}else{
+				bool =true;
+			}listeBool.add(bool);
+		}
+		return listeBool;
+	}**/
+}

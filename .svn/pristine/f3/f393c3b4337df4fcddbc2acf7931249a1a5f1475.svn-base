@@ -1,0 +1,33 @@
+package Vue;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import Modele.*;
+
+public class AffPlateau extends JPanel /*implements EcouteurModel*/{
+
+	protected int x, y;
+	protected int [][] contenu;
+	protected Plateau plataff;
+	protected JPanel panel;
+
+	public AffPlateau(Plateau platterm, JPanel panel){
+		this.x = platterm.getHauteur();
+		this.y = platterm.getLargeur();
+		this.contenu = platterm.getTab2();
+		this.panel = panel;
+		this.panel.setLayout(new GridLayout(x,y));
+
+		for(int i = 0; i < x; i++){
+			for(int j = 0; j < y; j++){
+				int val = contenu[i][j];
+				JLabel cell = new JLabel(String.valueOf(val));
+				this.panel.add(cell);
+			}
+		}
+		this.panel.repaint();
+	}
+
+
+}

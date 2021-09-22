@@ -1,0 +1,220 @@
+package Vue;
+
+//gestion des images
+import java.io.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+import Modele.*;
+import Controlleur.*;
+
+public class Menu extends JPanel{
+
+	//les boutons
+	protected JButton facile;
+	protected JButton medium;
+	protected JButton difficile;
+	protected JButton personnalise;
+
+	//les textes
+	protected JLabel txt;
+	protected JLabel ennonce;
+	protected JLabel erreur;
+	protected JTextField custom;
+
+	//la fenêtre de jeu
+	protected JPanel fen;
+
+	//les différentes images
+	protected ImageIcon imageBouton;
+	protected ImageIcon imagePanneau;
+
+	//couleur de fond
+	protected Color back = new Color(100, 131, 105);
+
+	//paramètre police
+	protected Font welcome = new Font("Arial", Font.ITALIC + Font.BOLD, 20);
+	protected Font textMenu = new Font("Arial", Font.ITALIC + Font.BOLD, 65);
+
+	public Menu(JPanel fen){
+		//création des images de fond
+		try{
+			//lien où l'on a trouvé l'image :https://www.pinterest.fr/pin/686447168193725811/ image pour les boutons
+			BufferedImage planche = ImageIO.read(new File("../image/planche.jpg"));
+			this.imageBouton = new ImageIcon(planche);
+			//lien ou touvé l'image : https://www.pinterest.fr/pin/628111479268298123/ image pour le panneau
+			BufferedImage panneau = ImageIO.read(new File("../image/panneau.jpg"));
+			this.imagePanneau = new ImageIcon(panneau);
+
+		this.fen   = fen;
+
+		this.txt = new JLabel(imagePanneau,JLabel.CENTER);
+		this.txt.setText("<html><br><br><center>Bienvenue dans le menu de selection des niveaux! <br> Veuillez choisir votre difficulté : <br> facile (0), medium (1), difficile (2) ou custom (de 3 à 6)</center></html>");
+		this.txt.setIconTextGap( - this.imagePanneau.getIconWidth()+150);
+		this.txt.setBounds(50,00,900,200);
+		this.txt.setFont(welcome);
+		this.fen.add(this.txt);
+
+		//configuration du boutton
+		this.facile = new JButton(imageBouton);//boutton avec image
+		//text +police
+		this.facile.setText("facile");
+		this.facile.setFont(welcome);
+		//place du texte sur l'image
+		this.facile.setIconTextGap( - this.imageBouton.getIconWidth()+100);
+		//Place du boutton dans le Jpanel
+		this.facile.setBounds(350,220,270,140);
+		this.facile.setBackground(back);
+
+		//ajout du bouton a la fentre + activation de sa méthode lorsqu'on clique dessus
+		this.fen.add(this.facile);
+		this.creaFacile();
+
+		this.medium = new JButton(imageBouton);
+		this.medium.setBounds(350,370,270,140);
+		this.medium.setText("medium");
+		this.medium.setFont(welcome);
+		this.medium.setIconTextGap( - this.imageBouton.getIconWidth()+85);
+		this.medium.setBackground(back);
+
+		this.fen.add(this.medium);
+		this.creaMedium();
+
+		this.difficile = new JButton(imageBouton);
+		this.difficile.setBounds(350,510,270,140);
+		this.difficile.setText("diificile");
+		this.difficile.setFont(welcome);
+		this.difficile.setIconTextGap( - this.imageBouton.getIconWidth()+85);
+		this.difficile.setBackground(back);
+
+		this.fen.add(this.difficile);
+		this.creaDur();
+
+		this.personnalise = new JButton(imageBouton);
+		this.personnalise.setBounds(350,650,270,140);
+		this.personnalise.setText("personnalisée");
+		this.personnalise.setFont(welcome);
+		this.personnalise.setIconTextGap( - this.imageBouton.getIconWidth()+50);
+		this.personnalise.setBackground(back);
+
+		this.fen.add(this.personnalise);
+		this.creaPerso();
+
+		this.ennonce = new JLabel("custom");
+		this.ennonce.setFont(welcome);
+		this.ennonce.setBounds(450,770,200,80);
+		this.fen.add(this.ennonce);
+
+		this.custom = new JTextField();
+		this.custom.setBounds(350,830,270,20);
+		this.fen.add(this.custom);
+	}catch(IOException e) {
+		e.printStackTrace();
+	}
+
+	}
+
+	//Plateau platterm = new Plateau(5, 5);
+	//JPanel panel = this;
+
+	public void creaFacile(){
+
+		this.facile.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				fen.removeAll();
+				CreationPlateau plateau  = new CreationPlateau(0);
+	      //plateau.ajoutEcouteur(fen);
+				AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen );//A quel moment on gere la difficulté?
+				System.out.println("Vous avez choisi facile");
+			}
+		});
+
+	}
+
+	public void creaMedium(){
+		this.medium.addMouseListener(new MouseAdapter(){
+
+			@Override
+			public void mousePressed(MouseEvent e){
+				CreationPlateau plateau  = new CreationPlateau(1);
+				fen.removeAll();
+				//plateau.ajoutEcouteur(fen);
+				AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen );
+				System.out.println("Vous avez choisi medium");
+			}
+		});
+
+	}
+
+	public void creaDur(){
+		this.difficile.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				fen.removeAll();
+				CreationPlateau plateau  = new CreationPlateau(2);
+				//plateau.ajoutEcouteur(fen);
+				AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen);
+				System.out.println("Vous avez choisi une difficulté personnalisée");
+			}
+		});
+
+	}
+
+	public void creaPerso(){
+		this.personnalise.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+
+				try{
+					int difficult = Integer.parseInt(custom.getText());
+
+					if(difficult  == 3 ){
+						fen.removeAll();
+						CreationPlateau plateau  = new CreationPlateau(3);
+						fen.repaint();
+					}
+					else if(difficult  == 4 ){
+						fen.removeAll();
+						CreationPlateau plateau  = new CreationPlateau(4);
+						fen.repaint();
+					}
+					else if(difficult  == 5 ){
+						fen.removeAll();
+						CreationPlateau plateau  = new CreationPlateau(5);
+						fen.repaint();
+					}
+					else if(difficult  == 6 ){
+						fen.removeAll();
+						CreationPlateau plateau  = new CreationPlateau(6);
+						fen.repaint();
+					}
+					else{
+						System.out.println("ah bah là, ça va beaucoup moins bien marché");
+						erreur = new JLabel("Rentrez un nombre compris entre 3 et 6");
+						erreur.setForeground(Color.red);
+						erreur.setBounds(350,860,800,20);
+						fen.add(erreur);
+						fen.repaint();
+					}
+				}catch (Exception ex) {
+    			System.err.println(ex);
+					erreur = new JLabel("Rentrez un nombre compris entre 3 et 6");
+					erreur.setForeground(Color.red);
+					erreur.setBounds(350,860,800,20);
+					fen.add(erreur);
+					fen.repaint();
+  			}
+				//plateau.ajoutEcouteur(fen);
+				//AffPlateau plataff = new AffPlateau(plateau.getPlateau(), fen);
+				System.out.println("Vous avez choisi une difficultée personnalisée");
+			}
+		});
+
+	}
+
+}

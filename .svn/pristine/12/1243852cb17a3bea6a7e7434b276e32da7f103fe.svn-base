@@ -1,0 +1,39 @@
+Jeu d'assemblage: notice
+
+
+Membre du groupe:
+
+Bauchez Marguerite
+Cocquerez Olivier
+Lebranchu Paul
+Lemaire Raphaelle
+
+
+Comment lancer l'application?
+
+Vous pouvez procéder de deux façons : 
+
+-Entrez la commande "ant" dans un terminal ouvert dans le repertoire où se trouve ce document
+
+-Entrez la commande "java -jar dist/livraison-0.1.jar" dans un terminal ouvert dans le repertoire
+où se trouve ce document
+
+La commande "ant" vous permet de compiler le code et de l'executer, mais c'est également elle qui génère
+la java.doc et l'archive .jar. pour pouvoir executer cette commande, vous devrez avoir ant d'installé sur
+machine.
+
+Comment jouer au jeu?
+
+Deux options s'offre à vous, une fois le programme lancé, vous pourrez:
+
+-soit joué dans votre terminal en suivant les instructions qui s'affichent sur le terminal
+
+-soit vous pourrez utilisé la fenêtre qui s'est lancé en même temps que votre programme, vous tomberez 
+alors sur le menu. Avant de lancer une partie en choissisant votre difficulté, je vous conseillerez de
+jetez un oeil au différents control du jeu (appuyer sur le bouton Control du menu) et choissisez ensuite
+la difficulté de votre jeu (option personnalisé: entre un entier compris entre 3 et 6)
+
+
+Il existe une troisième option pour lancer le jeu mais elle est encore en cours de développement: 
+
+Si vous avez les permissions sur votre ordinateur pour executer un fichier .jar venant de l'exterieur,vous pouvez cliquer sur l'archive .jar présentes dans le fichier dist, cependant, vous ne pourrez jouer qu'à une version où les images ne sont pas disponibles et où vous ne pourrez jouer qu'en mode visuel (aucun terminal ne s'ouvrira lorsque vous cliquerez sur l'archive).

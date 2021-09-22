@@ -1,0 +1,9 @@
+\BOOKMARK [1][-]{section.3}{Organisation du projet}{}% 1
+\BOOKMARK [2][-]{subsection.4}{Organisation des fichiers}{section.3}% 2
+\BOOKMARK [2][-]{subsection.5}{Gestion du projet}{section.3}% 3
+\BOOKMARK [1][-]{section.6}{Architecture du projet}{}% 4
+\BOOKMARK [2][-]{subsection.7}{Diagramme de la librairie piece}{section.6}% 5
+\BOOKMARK [2][-]{subsection.9}{Diagramme de livraison}{section.6}% 6
+\BOOKMARK [1][-]{section.11}{Cas d'utilisation}{}% 7
+\BOOKMARK [2][-]{subsection.12}{Mode Console}{section.11}% 8
+\BOOKMARK [2][-]{subsection.15}{Mode Interface Graphique}{section.11}% 9
